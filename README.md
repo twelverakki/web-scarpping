@@ -1,106 +1,97 @@
-# Laporan Praktikum Web Scraping
+# Tugas Praktikum Web Scraping - Pengantar Data Mining
 
-Repositori ini berisi kumpulan program web scraping untuk memenuhi tugas mata kuliah Pengantar Data Mining A. Program dirancang menggunakan Python, BeautifulSoup4, dan Pandas dengan mengutamakan efisiensi koneksi, ketahanan error, serta struktur data yang terorganisasi.
+Repositori ini dibuat untuk memenuhi tugas praktikum Web Scraping pada mata kuliah Pengantar Data Mining (Kelas A). Program ini ditulis menggunakan Python dengan memanfaatkan library BeautifulSoup4 untuk parsing HTML, requests untuk HTTP request, dan pandas untuk pengolahan serta penyimpanan data.
 
 ---
 
-## Struktur Proyek
+## Struktur Folder
 
 ```text
 Web Scrapping/
-│
 ├── scrapping-web/
-│   ├── latihan_mandiri.py     # Program scraping quotes.toscrape.com
-│   └── mini_project.py        # Program scraping scrapethissite.com
-│
+│   ├── latihan_mandiri.py     # Script scraping untuk quotes.toscrape.com
+│   └── mini_project.py        # Script scraping untuk scrapethissite.com
 ├── output/
-│   ├── latihan-mandiri/       # Output data dari latihan_mandiri.py
-│   │   ├── quotes.csv         # File data quote (jika openpyxl absen)
-│   │   └── kategori.csv       # File data kategori (jika openpyxl absen)
-│   │
-│   └── mini-project/          # Output data dari mini_project.py
+│   ├── latihan-mandiri/       # Folder hasil output latihan mandiri
+│   │   ├── quotes.csv         # Hasil quote (jika openpyxl tidak ada)
+│   │   └── kategori.csv       # Kategori tag unik (jika openpyxl tidak ada)
+│   └── mini-project/          # Folder hasil output mini project
 │       ├── countries.csv      # Data negara
-│       ├── hockey_teams.csv   # Data tim hoki
-│       └── oscar_films.csv    # Data pemenang Oscar
-│
-├── web-scrapping.txt          # Panduan modul praktikum dari dosen
-└── README.md                  # Dokumentasi laporan proyek
+│       ├── hockey_teams.csv   # Data tim hoki (seluruh halaman)
+│       └── oscar_films.csv    # Data film pemenang Oscar (AJAX)
+├── web-scrapping.md           # Modul praktikum format Markdown
+├── .gitignore                 # Konfigurasi ignore file Git
+└── README.md                  # Dokumentasi tugas
 ```
 
 ---
 
-## Kebutuhan Sistem & Instalasi
+## Kebutuhan Library
 
-Program ini berjalan di lingkungan Python 3.x dan memerlukan pustaka tambahan untuk request HTTP, parsing dokumen HTML, serta pengolahan data tabular.
-
-### 1. Instalasi Pustaka Utama
-Jalankan perintah berikut pada terminal Anda untuk memasang pustaka yang diperlukan:
+Sebelum menjalankan program, pastikan modul-modul berikut sudah terinstal di lingkungan Python Anda:
 
 ```bash
 pip install requests beautifulsoup4 pandas
 ```
 
-### 2. Instalasi Opsional (Ekspor Excel)
-Untuk mendukung penyimpanan format Excel (.xlsx) pada latihan mandiri, Anda dapat menambahkan pustaka openpyxl:
+Jika ingin hasil latihan mandiri langsung disimpan dalam format Excel (.xlsx), instal juga library berikut:
 
 ```bash
 pip install openpyxl
 ```
-*Catatan: Jika openpyxl tidak terinstal, program latihan mandiri akan mengalihkan output ke format CSV secara otomatis tanpa memicu kegagalan.*
 
 ---
 
 ## Cara Menjalankan Program
 
-Pastikan Anda berada di direktori utama proyek (`Web Scrapping`) sebelum mengeksekusi perintah di bawah ini.
+Jalankan perintah berikut melalui terminal atau command prompt di direktori utama proyek:
 
-### 1. Menjalankan Latihan Mandiri
-Program ini melakukan scraping pada situs `quotes.toscrape.com` untuk mengambil data kutipan dari 3 halaman pertama serta kategori unik yang tersedia.
+1. **Menjalankan Latihan Mandiri**:
+   ```bash
+   python scrapping-web/latihan_mandiri.py
+   ```
 
-```bash
-python scrapping-web/latihan_mandiri.py
-```
-
-### 2. Menjalankan Mini Project
-Program ini melakukan scraping tiga skenario halaman pada `scrapethissite.com` (data statis negara, data paginasi tim hoki, dan data AJAX JSON pemenang film Oscar).
-
-```bash
-python scrapping-web/mini_project.py
-```
+2. **Menjalankan Mini Project**:
+   ```bash
+   python scrapping-web/mini_project.py
+   ```
 
 ---
 
-## Rincian Teknis Program
+## Penjelasan Singkat Implementasi Program
 
-Setiap program mengimplementasikan arsitektur berorientasi objek (OOP) dan didesain menggunakan kaidah-kaidah pemrograman profesional:
+Kedua script telah dirapikan agar lebih modular dengan pendekatan Class-based di Python untuk mempermudah pembacaan kode dan debugging.
 
 ### 1. Latihan Mandiri (latihan_mandiri.py)
-* **Target Web**: https://quotes.toscrape.com
-* **Data yang Diambil**:
-  - Quote teks, nama penulis, kategori tag, serta nomor halaman.
-  - Daftar kategori unik (diambil secara dinamis dari kombinasi sidebar "Top Ten tags" dan seluruh kutipan yang berhasil ter-scrape).
-* **Fitur Utama**:
-  - `QuotesScraper` class untuk manajemen modul.
-  - Auto-fallback format ekspor: Menyimpan file dalam bentuk Excel `.xlsx` multi-sheet (Sheet 1: Quotes, Sheet 2: Categories) jika pustaka `openpyxl` tersedia, dan otomatis beralih ke dua file CSV terpisah jika pustaka tersebut tidak ditemukan.
+* **Sumber Data**: https://quotes.toscrape.com
+* **Alur Kerja**:
+  - Mengambil daftar kategori/tag dari sidebar halaman utama.
+  - Melakukan looping untuk mengambil data quote, penulis, dan tag dari halaman 1 sampai 3.
+  - Menggabungkan seluruh tag unik dari halaman utama dan hasil quotes untuk dijadikan daftar kategori final.
+  - **Penyimpanan**: Data quotes dan kategori disimpan ke dalam satu file Excel (`quotes_data.xlsx`) dengan dua sheet berbeda jika `openpyxl` tersedia. Jika tidak tersedia, program otomatis menyimpannya ke dalam dua file CSV terpisah (`quotes.csv` dan `kategori.csv`) di folder `output/latihan-mandiri/`.
 
 ### 2. Mini Project (mini_project.py)
-* **Target Web**: https://www.scrapethissite.com/pages/
-* **Skema Scraping**:
-  1. **Countries of the World (Simple Example)**: Mengekstrak nama negara, ibu kota, jumlah populasi, dan luas wilayah.
-  2. **Hockey Teams (Forms & Pagination)**: Melakukan iterasi dinamis pada formulir tabel tim hoki dari halaman 1 hingga selesai (atau batas maksimum 30 halaman) untuk mendata nama tim, tahun, rekor menang/kalah, selisih gol, dan persentase kemenangan.
-  3. **Oscar Winning Films (AJAX & Javascript)**: Melakukan request langsung pada endpoint API AJAX JSON internal website untuk mengunduh film pemenang Oscar dari tahun 2010 hingga 2015.
-* **Fitur Utama**:
-  - `ScrapeThisSiteScraper` class.
-  - Memisahkan fungsi pengambilan data HTML (`_get_soup`) dan JSON (`_get_json`).
+* **Sumber Data**: https://www.scrapethissite.com/pages/
+* **Alur Kerja**:
+  - **Countries of the World**: Mengambil data nama negara, ibu kota, populasi, dan luas wilayah dalam sekali request.
+  - **Hockey Teams**: Melakukan pagination secara otomatis dengan mengirimkan parameter halaman (`page_num`) untuk mengumpulkan seluruh data tim hoki dari halaman 1 sampai selesai (berhenti jika halaman berikutnya kosong).
+  - **Oscar Winning Films**: Melakukan request parameter query AJAX (`ajax=true&year=tahun`) langsung ke backend website untuk mengambil data film dalam bentuk JSON dari tahun 2010 hingga 2015.
+  - **Penyimpanan**: Masing-masing data disimpan ke dalam file `.csv` terpisah di folder `output/mini-project/`.
 
 ---
 
-## Fitur Kinerja dan Ketahanan Jaringan
+## Penanganan Masalah & Optimasi Kode
 
-Kedua skrip di atas dilengkapi dengan optimasi tingkat lanjut untuk menjamin efisiensi dan menghindari blokir IP:
+Untuk meningkatkan performa dan keandalan scraping, beberapa modifikasi teknis berikut diterapkan:
 
-* **Connection Pooling**: Menggunakan `requests.Session()` untuk mempertahankan koneksi TCP yang sama sepanjang aktivitas scraping, mengurangi latensi waktu jabat tangan (handshake) jaringan.
-* **Mekanisme Retry Otomatis**: Dilengkapi dengan adapter `urllib3.util.Retry` yang akan mengulangi request secara otomatis dengan peningkatan jeda waktu (*exponential backoff*) jika server merespons dengan kode kesalahan status sementara (500, 502, 503, 504).
-* **Defensive Parsing**: Penempatan metode pencari CSS selector dibungkus oleh fungsi penanganan kesalahan. Jika elemen web target hilang, program mengembalikan string kosong `""` tanpa menghentikan paksa aplikasi (*crash-free*).
-* **Etika Scraping**: Menambahkan parameter jeda waktu (*delay*) selama 2.0 detik pada setiap request HTTP untuk menghormati kapasitas server dan mencegah pemblokiran alamat IP.
-* **Logging System**: Menggunakan pustaka standard `logging` Python untuk mencetak kronologi dan status proses scraping pada terminal secara sistematis.
+* **Session Connection**: Menggunakan `requests.Session()` untuk menjaga koneksi TCP tetap terbuka selama proses request berulang. Hal ini mempercepat proses request halaman secara signifikan.
+* **Auto-Retry & Timeout**: Menggunakan adapter `Retry` untuk otomatis mencoba ulang request maksimal 3 kali jika terjadi gangguan jaringan (seperti server lambat atau error 5xx), serta menambahkan batas timeout 10 detik agar program tidak menggantung.
+* **Jeda Waktu (Delay)**: Menambahkan delay `time.sleep(2)` setiap kali program melakukan request ke server untuk mematuhi etika web scraping.
+* **Penanganan Tag Kosong (Error Handling)**: Menggunakan selector CSS (`select` / `select_one`) yang dibungkus dengan pengecekan kondisi. Jika ada data atau tag HTML yang kosong/berubah di website target, program akan mengisi nilai default (string kosong) daripada berhenti karena error.
+
+---
+
+## Identitas Penulis
+
+Chandra Andaya — H071241044 — Sistem Informasi UNHAS — Mata Kuliah Pengantar Data Mining
+
